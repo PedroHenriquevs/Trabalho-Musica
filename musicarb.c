@@ -38,7 +38,7 @@ typedef struct no{
 } No;
 
 
-//funcoes criar
+//Funções de Criação dos Elementos
 
 Artista *criarartista(char *nome, char *estilo_musical, int numero_albuns){
   Artista *novo = (Artista*)malloc(sizeof(Artista));
@@ -83,7 +83,9 @@ Musica *criarmusica(char *titulo, char *duracao){
     return novo;
 }
 
-No *criarno(Artista* artista){
+
+//Organização das Arvores Rubro-Negras
+No *Arvartista(Artista* artista){
     No *novo = (No*)malloc(sizeof(No));
     if(novo == NULL){
         printf("Erro ao alocar memoria\n");
@@ -98,5 +100,61 @@ No *criarno(Artista* artista){
 
 }
 
-//funcoes de inserir 
+No *Arvalbum(Album* album){
+    No *novo = (No*)malloc(sizeof(No));
+    if(novo == NULL){
+        printf("Erro ao alocar memoria\n");
+        exit(1);
+    }
+    novo->artista = album;
+    novo->cor = RED; // novo no sempre vermelho
+    novo->esq = NULL;
+    novo->dir = NULL; 
+    novo->pai = NULL;
+    return novo;
 
+}
+
+//-------
+
+//funcoes de inserir 
+No *inserirartista(No **raiz, char *nome, char *estilo_musical, int numero_albuns){
+    Artista *novo = criarartista(nome, estilo_musical, numero_albuns);
+    if(*raiz == NULL){
+        *raiz = Arvartista(novo);
+        (*raiz)->cor = BLACK; // raiz sempre preta
+        return novo;
+    }
+    else{
+        No *atual = *raiz;
+        No *pai = NULL;
+        while(atual != NULL){
+            pai = atual;
+            if(strcmp(novo->nome, atual->artista->nome) < 0){
+                atual = atual->esq;
+            }
+            else{
+                atual = atual->dir;
+            }
+        }
+        No *novo_no = Arvartista(novo);
+        novo_no->pai = pai;
+        if(strcmp(novo->nome, pai->artista->nome) < 0){
+            pai->esq = novo_no;
+        }
+        else{
+            pai->dir = novo_no;
+        }
+        // Aqui deveria vir a chamada para a funcao de balanceamento da arvore rubro-negra
+        return novo;
+        
+    }
+}
+
+No *inserirAlbum(No **raiz, char *titulo, int ano_lancamento, int quant_musicas){
+    Album *novo = criaralbum(titulo, ano_lancamento, quant_musicas);
+}
+
+//funcoes de buscar
+
+//funcoes de remover
