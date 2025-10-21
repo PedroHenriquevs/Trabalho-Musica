@@ -31,12 +31,6 @@ typedef struct musica{
     struct musica *prox;
 }Musica;
 
-typedef struct no{
-    Artista *artista;
-    enum Color cor;
-    struct no *esq, *dir, *pai;
-} No;
-
 
 //Funções de Criação dos Elementos
 
@@ -48,7 +42,7 @@ Artista *criarartista(char *nome, char *estilo_musical, int numero_albuns){
     }   
     strcpy(novo->nome, nome);
     strcpy(novo->estilo_musical, estilo_musical);
-    novo->numero_albuns = 0;
+    novo->numero_albuns = numero_albuns;
     novo->raizalbum = NULL;
     novo->esq = NULL;
     novo->dir = NULL;
@@ -85,65 +79,37 @@ Musica *criarmusica(char *titulo, char *duracao){
 
 
 //Organização das Arvores Rubro-Negras
-No *Arvartista(Artista* artista){
-    No *novo = (No*)malloc(sizeof(No));
-    if(novo == NULL){
-        printf("Erro ao alocar memoria\n");
-        exit(1);
-    }
-    novo->artista = artista;
-    novo->cor = RED; // novo no sempre vermelho
-    novo->esq = NULL;
-    novo->dir = NULL; 
-    novo->pai = NULL;
-    return novo;
 
-}
 
-No *Arvalbum(Album* album){
-    No *novo = (No*)malloc(sizeof(No));
-    if(novo == NULL){
-        printf("Erro ao alocar memoria\n");
-        exit(1);
-    }
-    novo->artista = album;
-    novo->cor = RED; // novo no sempre vermelho
-    novo->esq = NULL;
-    novo->dir = NULL; 
-    novo->pai = NULL;
-    return novo;
-
-}
 
 //-------
 
 //funcoes de inserir 
-No *inserirartista(No **raiz, char *nome, char *estilo_musical, int numero_albuns){
+Artista *inserirartista(Artista **raiz, char *nome, char *estilo_musical, int numero_albuns){
     Artista *novo = criarartista(nome, estilo_musical, numero_albuns);
     if(*raiz == NULL){
-        *raiz = Arvartista(novo);
+        *raiz = novo;
         (*raiz)->cor = BLACK; // raiz sempre preta
         return novo;
     }
     else{
-        No *atual = *raiz;
-        No *pai = NULL;
+        Artista *atual = *raiz;
+        Artista *pai = NULL;
         while(atual != NULL){
             pai = atual;
-            if(strcmp(novo->nome, atual->artista->nome) < 0){
+            if(strcmp(novo->nome, atual->nome) < 0){
                 atual = atual->esq;
             }
             else{
                 atual = atual->dir;
             }
         }
-        No *novo_no = Arvartista(novo);
-        novo_no->pai = pai;
-        if(strcmp(novo->nome, pai->artista->nome) < 0){
-            pai->esq = novo_no;
+        
+        if(strcmp(novo->nome, pai->nome) < 0){
+            pai->esq = novo;
         }
         else{
-            pai->dir = novo_no;
+            pai->dir = novo;
         }
         // Aqui deveria vir a chamada para a funcao de balanceamento da arvore rubro-negra
         return novo;
@@ -151,9 +117,38 @@ No *inserirartista(No **raiz, char *nome, char *estilo_musical, int numero_albun
     }
 }
 
-No *inserirAlbum(No **raiz, char *titulo, int ano_lancamento, int quant_musicas){
+Album *inserirAlbum(Album **raiz, char *titulo, int ano_lancamento, int quant_musicas) {
     Album *novo = criaralbum(titulo, ano_lancamento, quant_musicas);
+
+    if (*raiz == NULL) {
+        // Primeiro nó da árvore (raiz)
+        *raiz = novo;
+        (*raiz)->cor = BLACK; // raiz sempre preta
+        return *raiz;
+    }
+
+    Album *atual = *raiz;
+    Album *pai = NULL;
+
+    // Navega pela árvore comparando títulos
+    while (atual != NULL) {
+        pai = atual;
+        if (strcmp(titulo, atual->titulo) < 0)
+            atual = atual->esq;
+        else
+            atual = atual->dir;
+    }
+
+    // Insere o novo nó à esquerda ou à direita
+    if (strcmp(titulo, pai->titulo) < 0)
+        pai->esq = novo;
+    else
+        pai->dir = novo;
+
+    // Aqui poderia vir a função de balanceamento rubro-negra (opcional)
+    return novo;
 }
+
 
 //funcoes de buscar
 
