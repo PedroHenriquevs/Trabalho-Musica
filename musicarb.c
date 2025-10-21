@@ -77,11 +77,6 @@ Musica *criarmusica(char *titulo, char *duracao){
     return novo;
 }
 
-
-//Organização das Arvores Rubro-Negras
-
-
-
 //-------
 
 //funcoes de inserir 
@@ -152,4 +147,80 @@ Album *inserirAlbum(Album **raiz, char *titulo, int ano_lancamento, int quant_mu
 
 //funcoes de buscar
 
+Artista *buscarArtista(Artista *raiz, char *nome, Artista *auxiliar){
+    if(raiz == NULL){
+        return NULL;
+    }
+    
+    if(strcmp(nome, raiz->nome) < 0){
+        auxiliar = buscarArtista(raiz->esq, nome, auxiliar);
+    }else if(strcmp(nome, raiz->nome) > 0){
+        auxiliar = buscarArtista(raiz-> dir,  nome, auxiliar);
+    }else{
+        auxiliar = raiz;
+    }
+    
+    return auxiliar;
+}
+
+Album *buscarAlbum(Album *raiz, char *titulo, Album *auxAlbum){
+    if(raiz == NULL){
+        return NULL;
+    }
+
+    if(strcmp(titulo, raiz->titulo) < 0){
+        auxAlbum = buscarAlbum(raiz->esq, titulo, auxAlbum);
+    }else if(strcmp(titulo, raiz->titulo) > 0){
+        auxAlbum = buscarAlbum(raiz->dir, titulo, auxAlbum);
+    }else{
+        auxAlbum = raiz;
+    }
+
+    return auxAlbum;
+}
+
+
+//Funções de imprimir
+
+void imprimirArtista(Artista *raiz, char *nome, Artista *auxiliar){
+
+    Artista *achou = buscarArtista(raiz, nome, auxiliar);
+
+    if(achou == NULL){
+        printf("\nArtista não encontrado\n");
+    }else{
+        printf("\n----ENCONTRADO----\n");
+        printf("Nome: %s\n", achou->nome);
+        printf("Estilo Musical: %s\n", achou->estilo_musical);
+        printf("Quantidade de albuns: %d\n", achou->numero_albuns);
+    }
+}
+
+void imprimirAlbum(Album *raiz, char *titulo, Album *auxAlbum){
+    Album *achou = buscarAlbum(raiz, titulo, auxAlbum);
+
+    if(achou == NULL){
+        printf("\nAlbum não encontrado\n");
+    }else{
+        printf("\n----ENCONTRADO----\n");
+        printf("Titulo: %s\n", achou->titulo);
+        printf("Ano de lancamento: %d\n", achou->ano_lancamento);
+        printf("Quantidade de musicas: %d\n", achou->quant_musicas);
+    }
+}
+
 //funcoes de remover
+
+
+//Menu
+void menu(){
+    printf("\n---MENU---\n");
+    printf("1. Inserir Artista\n");
+    printf("2. Inserir Album\n");
+    printf("3. Buscar Artista\n");
+    printf("4. Buscar Album\n");
+    printf("5. Sair\n");
+    printf("Escolha uma opcao: ");
+    int opcao;
+    scanf("%d", &opcao);
+}
