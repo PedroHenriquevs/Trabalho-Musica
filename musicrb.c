@@ -316,7 +316,6 @@ Album *inserirAlbumParaArtista(Artista *artista, char *titulo, int ano_lancament
         pai->dir = novo;
 
     novo->pai = pai;
-    // Aqui também poderia vir o rebalanceamento da rubro-negra para álbuns
     return novo;
 }
 
@@ -906,9 +905,33 @@ void menu()
         break;
     }
     case 6:
-        // Implementar remocao de album 
-        printf("Remocao de album nao implementada ainda.\n");
+    {
+        char nomeArtista[100];
+        char titulo[100];
+        printf("Digite o nome do artista do album: ");
+        fgets(nomeArtista, sizeof(nomeArtista), stdin);
+        nomeArtista[strcspn(nomeArtista, "\n")] = 0;
+
+        printf("Digite o titulo do album: ");
+        fgets(titulo, sizeof(titulo), stdin);
+        titulo[strcspn(titulo, "\n")] = 0;
+
+        Artista *auxArtista = buscarArtista(raizArtista, nomeArtista, NULL);
+        if (!auxArtista) {
+            printf("Artista nao encontrado!\n");
+            break;
+        }
+
+        Album *auxAlbum = buscarAlbum(auxArtista->raizalbum, titulo, NULL);
+        if (!auxAlbum) {
+            printf("Album nao encontrado!\n");
+            break;
+        }
+
+        removerAlbum(auxAlbum, titulo);
+        printf("Album removido com sucesso!\n");
         break;
+    }
     case 7:
         inserirMusica();
         break;
