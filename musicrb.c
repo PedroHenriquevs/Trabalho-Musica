@@ -793,7 +793,8 @@ void menu()
     printf("6. Remover Album\n");
     printf("7. Adicionar Musica\n");
     printf("8. Buscar Musica\n");
-    printf("9. Sair\n");
+    printf("9. Remover Musica\n");
+    printf("10. Sair\n");
     printf("Escolha uma opcao: ");
 
     int opcao;
@@ -945,10 +946,42 @@ void menu()
     }
         
     case 9:{
+        char nomeArtista[100];
+        char tituloAlbum[100];
+        char tituloMusica[100];
+
+        printf("Digite o nome do artista: ");
+        fgets(nomeArtista, sizeof(nomeArtista), stdin);
+        nomeArtista[strcspn(nomeArtista, "\n")] = 0;
+
+        Artista *auxArt = buscarArtista(raizArtista, nomeArtista, NULL);
+        if (!auxArt) {
+            printf("Artista nao encontrado!\n");
+            break;
+        }
+
+        printf("Digite o titulo do album: ");
+        fgets(tituloAlbum, sizeof(tituloAlbum), stdin);
+        tituloAlbum[strcspn(tituloAlbum, "\n")] = 0;
+
+        Album *auxAlbum = buscarAlbum(auxArt->raizalbum, tituloAlbum, NULL);
+        if (!auxAlbum) {
+            printf("Album nao encontrado!\n");
+            break;
+        }
+
+        printf("Digite o titulo da musica para remover: ");
+        fgets(tituloMusica, sizeof(tituloMusica), stdin);
+        tituloMusica[strcspn(tituloMusica, "\n")] = 0;
+
+        removerMusica(auxAlbum, tituloMusica);
+        break;
+        
+    }
+    case 10:
         printf("Saindo...\n");
         exit(0);
         break;
-    }
     default:
         printf("Opcao invalida!\n");
         break;
